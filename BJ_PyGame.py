@@ -19,6 +19,10 @@ display = pygame.display.set_mode((display_width,display_height))
 # Картинки
 image_user = pygame.image.load('image/user.png') # Юзер
 image_dealer = pygame.image.load('image/dealer.png') # Дилер
+image_bot1 = pygame.image.load('image/bot1.png') # Bot1
+image_bot2 = pygame.image.load('image/bot2.png') # Bot2
+image_bot3 = pygame.image.load('image/bot3.png') # Bot3
+image_bot4 = pygame.image.load('image/bot4.png') # Bot4
 background = pygame.image.load('image/background.jpg') #Задний фон игры
 menu_background = pygame.image.load('image/background_menu.jpg') #Задний фон меню
 card_back = pygame.image.load('image/cards/Back Red.png') #Рубашка карты 
@@ -31,6 +35,7 @@ chips25_2 = pygame.image.load('image/chips25_2.png')
 chips100 = pygame.image.load('image/chips100.png') 
 chips100_1 = pygame.image.load('image/chips100_1.png') 
 chips100_2 = pygame.image.load('image/chips100_2.png') 
+chips_stack = pygame.image.load('image/chips_stack.png') 
 
 # Звуки
 take_card_sound = pygame.mixer.Sound("sound/cardPlace4.wav")
@@ -55,10 +60,14 @@ class Deck():
         random.shuffle(self.cards) 
 
 class Player():
-    def __init__(self,name,money):
+    def __init__(self,name,money,image):
         self.name  = name
         self.money = money
+        self.image = image
+        self.rate = 0
+        self.list_chips = []
         self.sum_on_hand = 0
+        self.final_sum_on_hand = 0
         self.cards_on_hand = []
 
 class Botton():
@@ -116,7 +125,51 @@ class BlackJack():
         for bot in bot_list:
             self.user_list.append(bot)
 
-    def start_game(self):   
+    def start_game(self): 
+
+        display.blit(background,(0,0))
+        print_text(f'Who can beat the casino?',700,700,(10,180,250),font_size = 50)
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot100.png'),(100,100))
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot200.png'),(100,100))
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot300.png'),(100,100))
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot400.png'),(100,100))
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot500.png'),(100,100))
+        pygame.display.update()
+        time.sleep(1)
+        display.blit(pygame.image.load('image/bot600.png'),(100,100))
+        pygame.display.update()
+
+        # display.blit(image_user,(700,700))
+        # print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
+        # print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
+
+        # dealer
+        # display.blit(image_dealer,(1000,0))
+        # print_text(f'{self.dealer.name}',1000,0,(10,180,250),font_size = 30)
+        # print_text(f'{self.dealer.money}$',1000,50,(200,204,58),font_size = 30)
+        # display.blit(chips_stack,(1200,20))
+
+        # bots ['Eva','Victoria','Mike']
+        # position = 0
+        # for i in range(len(self.bot_list)):
+        #     display.blit(self.bot_list[i].image,(50,0+position))
+        #     print_text(f'{self.bot_list[i].name}',50,0+position,(10,180,250),font_size = 30)
+        #     print_text(f'{self.bot_list[i].money}$',50,50+position,(200,204,58),font_size = 30)
+        #     position +=300
+
+
+        time.sleep(1)
+
         self.show_users()
 
     def show_users(self):
@@ -134,14 +187,26 @@ class BlackJack():
         button_100 = Botton(100,100)
 
         # user
-        display.blit(image_user,(500,700))
-        print_text(f'{self.user.name}',500,700,(10,180,250),font_size = 30)
-        print_text(f'{self.user.money}$',500,750,(200,204,58),font_size = 30)
+        display.blit(image_user,(700,700))
+        print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
+        print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
 
         # dealer
         display.blit(image_dealer,(1000,0))
         print_text(f'{self.dealer.name}',1000,0,(10,180,250),font_size = 30)
         print_text(f'{self.dealer.money}$',1000,50,(200,204,58),font_size = 30)
+
+        display.blit(chips_stack,(1100,0))
+
+        # bots ['Eva','Victoria','Mike']
+        position = 0
+        for bot in self.bot_list:
+            display.blit(bot.image,(50,0+position))
+            print_text(f'{bot.name}',50,0+position,(10,180,250),font_size = 30)
+            print_text(f'{bot.money}$',50,50+position,(200,204,58),font_size = 30)
+            position +=300
+
+        self.bot_rates()    
 
         while game:
             mouse = pygame.mouse.get_pos()    
@@ -153,32 +218,32 @@ class BlackJack():
                     pygame.quit()
                     
             if self.rate > 0:
-                button_play.draw(712,845,'Lets go',self.start_round,only_text = False)
-                button_clear.draw(910,845,'Clear',self.clear,only_text = False)
+                button_play.draw(912,845,'Lets go',self.start_round,only_text = False)
+                button_clear.draw(1110,845,'Clear',self.clear,only_text = False)
 
             if 5 <= self.user.money:
-                if 700 < mouse[0] < 791 and 700 < mouse[1] <791:
-                    display.blit(chips5_1,(700,700))
+                if 900 < mouse[0] < 991 and 700 < mouse[1] <791:
+                    display.blit(chips5_1,(900,700))
                     if click[0] == 1:
-                        button_05.draw(700,700, action=self.chips_on_table, parametr=(chips5_2,5))
+                        button_05.draw(900,700, action=self.chips_on_table, parametr=(chips5_2,5))
                 else:                
-                    display.blit(chips5,(700,700))
+                    display.blit(chips5,(900,700))
 
             if 25 <= self.user.money:
-                if 800 < mouse[0] < 891 and 700 < mouse[1] <791:
-                    display.blit(chips25_1,(800,700))
+                if 1000 < mouse[0] < 1091 and 700 < mouse[1] <791:
+                    display.blit(chips25_1,(1000,700))
                     if click[0] == 1 :
-                        button_25.draw(800,700, action=self.chips_on_table, parametr=(chips25_2,25))
+                        button_25.draw(1000,700, action=self.chips_on_table, parametr=(chips25_2,25))
                 else:                
-                    display.blit(chips25,(800,700)) 
+                    display.blit(chips25,(1000,700)) 
     
             if 100 <= self.user.money:
-                if 900 < mouse[0] < 991 and 700 < mouse[1] <791:
-                    display.blit(chips100_1,(900,700))
+                if 1100 < mouse[0] < 1191 and 700 < mouse[1] <791:
+                    display.blit(chips100_1,(1100,700))
                     if click[0] == 1:
-                        button_100.draw(900,700,action=self.chips_on_table, parametr=(chips100_2,100))
+                        button_100.draw(1100,700,action=self.chips_on_table, parametr=(chips100_2,100))
                 else:                
-                    display.blit(chips100,(900,700)) 
+                    display.blit(chips100,(1100,700)) 
                
             pygame.display.update()
 
@@ -188,21 +253,39 @@ class BlackJack():
         display.blit(background,(0,0))
 
         # user
-        display.blit(image_user,(500,700))
-        print_text(f'{self.user.name}',500,700,(10,180,250),font_size = 30)
-        print_text(f'{self.user.money}$',500,750,(200,204,58),font_size = 30)
+        display.blit(image_user,(700,700))
+        print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
+        print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
 
         # dealer
         display.blit(image_dealer,(1000,0))
         print_text(f'{self.dealer.name}',1000,0,(10,180,250),font_size = 30)
         print_text(f'{self.dealer.money}$',1000,50,(200,204,58),font_size = 30)
+        display.blit(chips_stack,(1200,20))
 
-        # others
-        print_text(f'{self.rate}$',900,600,(255,255,255),font_size = 30)
+        # bots ['Eva','Victoria','Mike']
+        position = 0
+        for bot in self.bot_list:
+            display.blit(bot.image,(50,0+position))
+            print_text(f'{bot.name}',50,0+position,(10,180,250),font_size = 30)
+            print_text(f'{bot.money}$',50,50+position,(200,204,58),font_size = 30)
+            position +=300
+
+        # chips
+        print_text(f'{self.rate}$',1100,600,(255,255,255),font_size = 30)
         n = 0
         for i in self.list_chips:
-            display.blit(i,(800,600-n*4))   
+            display.blit(i,(1000,600-n*4))   
             n+=1
+
+        position = 0
+        for i in range(len(self.bot_list)): 
+            print_text(f'{self.bot_list[i].rate}$',430,40+position,(255,255,255),font_size = 30)
+            n = 0
+            for chip in self.bot_list[i].list_chips: 
+                display.blit(chip,(330,40+position-n*4))
+                n+=1
+            position +=300    
 
     def chance_of_success(self):
         number_of_cards = len(self.deck.cards) 
@@ -218,11 +301,39 @@ class BlackJack():
 
     def chips_on_table(self,parametr):
         pygame.time.delay(300)
-        display.blit(parametr[0],(800,600-self.number_chips*4))  
-        self.number_chips += 1
+        # display.blit(parametr[0],(800,600-self.number_chips*4))  
+        # self.number_chips += 1
         self.user.money -= parametr[1]
         self.rate +=parametr[1]
         self.list_chips.append(parametr[0])
+        self.refresh_window() 
+
+    def bot_rates(self):
+
+        for i in range(len(self.bot_list)):
+            self.bot_list[i].list_chips = [] 
+
+            if random.randrange(5, 200, 5) > self.bot_list[i].money:
+                self.bot_list[i].rate = 5  
+            else:        
+                self.bot_list[i].rate = random.randrange(5, 200, 5)
+            rate = self.bot_list[i].rate
+
+            while rate !=0:
+                if rate - 100 >= 0:
+                    self.bot_list[i].list_chips.append(chips100_2)
+                    self.bot_list[i].money -= 100
+                    rate -= 100
+
+                elif rate - 25 >= 0:   
+                    self.bot_list[i].list_chips.append(chips25_2)
+                    self.bot_list[i].money -= 25
+                    rate -= 25  
+
+                else:   
+                    self.bot_list[i].list_chips.append(chips5_2)
+                    self.bot_list[i].money -= 5
+                    rate -= 5  
         self.refresh_window() 
 
     def start_round(self):
@@ -231,17 +342,17 @@ class BlackJack():
 
         display.blit(background,(0,0))  
 
-        pygame.mixer.Sound.play(cards_shuffle)  
+        # pygame.mixer.Sound.play(cards_shuffle)  
         for i in range(52):
             pygame.display.update()
-            time.sleep(0.05)
+            # time.sleep(0.05)
             display.blit(card_back,(1400,350-i*4))
             
         button_take_card = Botton(190,50)
         button_skip = Botton(100,50)
 
-        print_text(f'{self.user.name}',500,700,(10,180,250),font_size = 30)
-        print_text(f'{self.user.money}$',500,750,(200,204,58),font_size = 30)
+        print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
+        print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
 
         self.first_move()
         
@@ -255,11 +366,11 @@ class BlackJack():
                     pygame.quit()
              
             if self.user.sum_on_hand < 21: 
-                button_take_card.draw(712,845,'Take card',action = self.take_card,only_text = False, parametr=self.user)
+                button_take_card.draw(912,845,'Take card',action = self.take_card,only_text = False, parametr=self.user)
             else:
                 self.skip()    
 
-            button_skip.draw(910,845,'Skip',action = self.skip,only_text = False)
+            button_skip.draw(1110,845,'Skip',action = self.skip,only_text = False)
             pygame.display.update()    
 
     def clear(self):
@@ -271,6 +382,10 @@ class BlackJack():
 
     def first_move(self):
         self.take_card(self.user,2)
+
+        for bot in self.bot_list:
+            self.take_card(bot,2)
+
         self.take_card(self.dealer,1)
 
     def dealers_brain(self): 
@@ -278,7 +393,34 @@ class BlackJack():
             time.sleep(0.3)
             self.take_card(self.dealer)
 
+    def bots_brain(self,bot): 
+        while bot.sum_on_hand < 21:
+            time.sleep(0.3)
+            take_or_not = self.to_be_and_not_to_be(bot.sum_on_hand)
+            if take_or_not:
+                self.take_card(bot)    
+            else:
+                break    
+
+    def to_be_and_not_to_be(self,sum_cards):
+        number_of_cards = len(self.deck.cards) 
+        happy_cards = 0
+        max_sum = 21 - sum_cards 
+        for card in self.deck.cards:
+            if card.rank == 11:
+                happy_cards += 1    
+            elif card.rank <=max_sum:
+                happy_cards += 1 
+        lucky_list = [0]*(number_of_cards-happy_cards) + [1]*happy_cards
+        return random.choice(lucky_list)
+
     def skip(self):
+
+        # bots
+        for bot in self.bot_list:
+            if bot.money >= self.rate:
+                self.bots_brain(bot)
+        # self.show_result()    
 
         # dealer
         self.dealers_brain()
@@ -299,9 +441,9 @@ class BlackJack():
             self.deck.cards.append(self.user.cards_on_hand.pop())    
         for i in range(len(self.dealer.cards_on_hand)):
             self.deck.cards.append(self.dealer.cards_on_hand.pop())
-        # for bot in self.bot_list:
-        #     for i in range(len(bot.cards_on_hand)):
-        #         self.deck.cards.append(bot.cards_on_hand.pop())    
+        for bot in self.bot_list:
+            for i in range(len(bot.cards_on_hand)):
+                self.deck.cards.append(bot.cards_on_hand.pop())    
 
         self.deck.shuffle()    
 
@@ -317,37 +459,46 @@ class BlackJack():
 
             self.user.money += rate
             self.dealer.money -= rate
-            print_text(f'Congratulation, you won! {int(rate)}$',500,450,(50,255,50),font_size = 50) 
+            print_text(f'YOU WON! {int(rate)}$',700,450,(50,255,50),font_size = 60) 
         else:
             if self.user.final_sum_on_hand < self.dealer.final_sum_on_hand:
                 # self.user.money -= self.rate*2
                 self.dealer.money += self.rate 
-                print_text(f'You lose! {int(self.rate)}$',600,450,(255,50,50),font_size = 50)                          
+                print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)                          
             elif self.user.final_sum_on_hand > self.dealer.final_sum_on_hand:
                 self.user.money += self.rate*2
                 self.dealer.money -= self.rate
-                print_text(f'Congratulation, you won! {int(self.rate*2)}$',500,450,(50,255,50),font_size = 50)
+                print_text(f'YOU WON! {int(self.rate*2)}$',700,450,(50,255,50),font_size = 60)
             else:
                 self.user.money += self.rate
                 print_text(f'Draw!',700,450,(255,255,255),font_size = 50)  
-        pygame.display.update()
 
-        # for bot in self.bot_list:
-        #     if self.show_sum_cards_final(bot) == 21 and len(bot.cards_on_hand) == 2:
-        #         bot.money += self.rate*1.5
-        #         self.dealer.money -= self.rate*1.5
-        #         print(f"{bot.name} выиграл! {self.rate*1.5}$")
-        #     else:    
-        #         if self.show_sum_cards_final(self.dealer) > self.show_sum_cards_final(bot):
-        #             bot.money -= self.rate
-        #             self.dealer.money += self.rate 
-        #             print(f"{bot.name} проиграл! {self.rate}$")                         
-        #         elif self.show_sum_cards_final(self.dealer) < self.show_sum_cards_final(bot):
-        #             bot.money += self.rate
-        #             self.dealer.money -= self.rate
-        #             print(f"{bot.name} выиграл! {self.rate}$")
-        #         else:
-        #             print(f"У {bot.name} ничья с дилером!")        
+        position = 0
+        for bot in self.bot_list:
+            if bot.sum_on_hand == 21 and len(bot.cards_on_hand) == 2:
+                if (int(bot.rate*0.5) + bot.rate*2)%5:
+                    rate = (int(bot.rate*0.5) + bot.rate*2)    
+                    rate += 5-(int(bot.rate*0.5) + bot.rate*2)%5
+                else:
+                    rate = (int(bot.rate*0.5) + bot.rate*2)
+                bot.money += rate
+                self.dealer.money -= rate
+                print_text(f'{bot.name} win! {int(bot.rate)}$',200,260+position,(50,255,50),font_size = 30)
+            else:    
+                if bot.final_sum_on_hand < self.dealer.final_sum_on_hand:
+                    # bot.money -= bot.rate
+                    self.dealer.money += bot.rate 
+                    print_text(f'{bot.name} lose! {int(bot.rate)}$',200,260+position,(255,50,50),font_size = 30)
+                        
+                elif bot.final_sum_on_hand > self.dealer.final_sum_on_hand:
+                    bot.money += bot.rate*2
+                    self.dealer.money -= bot.rate
+                    print_text(f'{bot.name} win! {int(bot.rate)}$',200,260+position,(50,255,50),font_size = 30)
+                else:
+                    bot.money += bot.rate
+                    print_text(f'{bot.name} Draw! {int(bot.rate)}$',200,260+position,(255,255,255),font_size = 30)      
+            position +=300
+        pygame.display.update()    
 
     def show_result(self):
 
@@ -355,37 +506,41 @@ class BlackJack():
         display.blit(background,(0,0))
 
         # user
-        display.blit(image_user,(500,700))
-        print_text(f'{self.user.name}',500,700,(10,180,250),font_size = 30)
-        print_text(f'{self.user.money}$',500,750,(200,204,58),font_size = 30)
+        display.blit(image_user,(700,700))
+        print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
+        print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
 
         # dealer
         display.blit(image_dealer,(1000,0))
         print_text(f'{self.dealer.name}',1000,0,(10,180,250),font_size = 30)
         print_text(f'{self.dealer.money}$',1000,50,(200,204,58),font_size = 30)
+        display.blit(chips_stack,(1200,20))
 
-        # others
-        print_text(f'{self.rate}$',900,600,(255,255,255),font_size = 30)
+        # bots ['Eva','Victoria','Mike']
+        position = 0
+        for i in range(len(self.bot_list)):
+            display.blit(self.bot_list[i].image,(50,0+position))
+            print_text(f'{self.bot_list[i].name}',50,0+position,(10,180,250),font_size = 30)
+            print_text(f'{self.bot_list[i].money}$',50,50+position,(200,204,58),font_size = 30)
+            position +=300
+
+        # chips
+        print_text(f'{self.rate}$',1100,600,(255,255,255),font_size = 30)
         n = 0
         for i in self.list_chips:
-            display.blit(i,(800,600-n*4))   
+            display.blit(i,(1000,600-n*4))   
             n+=1
 
+        position = 0
+        for i in range(len(self.bot_list)): 
+            print_text(f'{self.bot_list[i].rate}$',430,40+position,(255,255,255),font_size = 30)
+            n = 0
+            for chip in self.bot_list[i].list_chips: 
+                display.blit(chip,(330,40+position-n*4))
+                n+=1
+            position +=300   
+
         for id_user in self.user_list:
-            position = 0
-            for i in id_user.cards_on_hand:
-                if id_user == self.user:
-                    display.blit(i.image,(670+position,700))
-                    position += 50 
-                elif id_user == self.dealer:
-                    display.blit(i.image,(900+position,50))
-                    position -= 50    
-
-            position_deck = 0
-            for i in range(len(self.deck.cards)):
-                display.blit(card_back,(1400,350-position_deck*4))
-                position_deck +=1
-
             sum_on_hand = 0
             for i in id_user.cards_on_hand:
                 if i.rank == 11:
@@ -399,19 +554,43 @@ class BlackJack():
                 id_user.final_sum_on_hand = 0
             else:                       
                 id_user.final_sum_on_hand = sum_on_hand
-            id_user.sum_on_hand = sum_on_hand    
+            id_user.sum_on_hand = sum_on_hand
 
-            if id_user == self.user:
-                print_text(f'score:{sum_on_hand}',750+position,700,(255,255,255),font_size = 30)
-                if self.hints and id_user.sum_on_hand < 21:
-                    chance = self.chance_of_success()
-                    print_text(f'change of success:{chance}%',750+position,730,(255,255,255),font_size = 30)
-            elif id_user == self.dealer:    
-                print_text(f'score:{sum_on_hand}',750+position,100,(255,255,255),font_size = 30)
+        # cards user
+        position = 0
+        for i in self.user.cards_on_hand:
+            display.blit(i.image,(870+position,700))
+            position += 50
+        print_text(f'score: {self.user.sum_on_hand}',860,650,(255,255,255),font_size = 30)
+        if self.hints and id_user.sum_on_hand < 21:
+            chance = self.chance_of_success()
+            print_text(f'change of success: {chance}%',950+position,730,(255,255,255),font_size = 30)    
+
+        # cards bots
+        position_bot = 0
+        for bot in self.bot_list:
+            position_card = 0
+            for i in bot.cards_on_hand:
+                display.blit(i.image,(300+position_card,130+position_bot))
+                position_card += 50
+            print_text(f'score:{bot.sum_on_hand}',300,90+position_bot,(255,255,255),font_size = 30)    
+            position_bot +=300  
+            
+        # cards dealer
+        position = 0
+        for i in self.dealer.cards_on_hand:
+            display.blit(i.image,(900+position,50))
+            position -= 50
+        print_text(f'score:{self.dealer.sum_on_hand}',850,0,(255,255,255),font_size = 30)    
+
+        position_deck = 0
+        for i in range(len(self.deck.cards)):
+            display.blit(card_back,(1400,350-position_deck*4))
+            position_deck +=1
 
     def take_card(self,user,number = 1):
-        pygame.mixer.Sound.play(take_card_sound)  
-        pygame.time.delay(300)
+        # pygame.mixer.Sound.play(take_card_sound)  
+        # pygame.time.delay(300)
 
         for i in range(1,number+1):
             user.cards_on_hand.append(self.deck.cards.pop())
@@ -451,7 +630,7 @@ def menu_number_of_players():
     botton_players1 = Botton(70,50)
     botton_players2 = Botton(70,50)
     botton_players3 = Botton(70,50)
-    botton_players4 = Botton(70,50)
+    # botton_players4 = Botton(70,50)
 
     botton_hints_yes = Botton(70,50)
     botton_hints_no  = Botton(70,50)
@@ -467,16 +646,16 @@ def menu_number_of_players():
 
         print_text('Use hints?',250,200,(255,255,255),font_size = 50)
         if hints:
-            botton_players3.draw(550,190,'yes',use_hints,60,parametr=True)
+            botton_hints_yes.draw(550,190,'yes',use_hints,60,parametr=True)
         else:
-            botton_players4.draw(550,190,'no',use_hints,60,parametr=False)
+            botton_hints_no.draw(550,190,'no',use_hints,60,parametr=False)
 
         print_text('How many bot players will be in the game?',250,400,(255,255,255),font_size = 50)
         botton_players0.draw(550,500,'0',init_start_game,60,0)
         botton_players1.draw(650,500,'1',init_start_game,60,1)
         botton_players2.draw(750,500,'2',init_start_game,60,2)
         botton_players3.draw(850,500,'3',init_start_game,60,3)
-        botton_players4.draw(950,500,'4',init_start_game,60,4)
+        # botton_players4.draw(950,500,'4',init_start_game,60,4)
         
         pygame.display.update()
 
@@ -491,12 +670,13 @@ def use_hints(hint):
 def init_start_game(number_of_bots):  
     global hints
 
-    user = Player(user_name,130)
-    dealer = Player('dealer',10000)
+    user = Player(user_name,2000,image_user)
+    dealer = Player('Dealer',10000,image_dealer)
 
     bot_list = []
-    for i in range(1,number_of_bots+1):
-        bot_list.append(Player(f'player_bot{i}',random.randrange(1000, 5000, 5)))
+    bot_name = ['Eva','Victoria','Mike','Sophia']
+    for i in range(0,number_of_bots):
+        bot_list.append(Player(f'{bot_name[i]}',random.randrange(1000, 5000, 5),pygame.image.load('image/bot'+str(i+1)+'.png')))
 
     cards_list = []
     for j in ['Clubs ','Diamond ','Hearts ','Spades ']:
