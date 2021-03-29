@@ -17,8 +17,8 @@ display_height = 900
 display = pygame.display.set_mode((display_width,display_height))
 
 # Картинки
-image_user = pygame.image.load('image/user.png') #Юзер
-image_dealer = pygame.image.load('image/dealer.png') #Юзер
+image_user = pygame.image.load('image/user.png') # Юзер
+image_dealer = pygame.image.load('image/dealer.png') # Дилер
 background = pygame.image.load('image/background.jpg') #Задний фон игры
 menu_background = pygame.image.load('image/background_menu.jpg') #Задний фон меню
 card_back = pygame.image.load('image/cards/Back Red.png') #Рубашка карты 
@@ -31,13 +31,13 @@ chips25_2 = pygame.image.load('image/chips25_2.png')
 chips100 = pygame.image.load('image/chips100.png') 
 chips100_1 = pygame.image.load('image/chips100_1.png') 
 chips100_2 = pygame.image.load('image/chips100_2.png') 
-A5 = pygame.image.load('image/Clubs 11.png') 
 
 # Звуки
 take_card_sound = pygame.mixer.Sound("sound/cardPlace4.wav")
 cards_shuffle = pygame.mixer.Sound("sound/cardShuffle.wav")
 
 # Видео
+
 
 class Cards():
     def __init__(self,image,rank):
