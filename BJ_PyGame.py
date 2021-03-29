@@ -3,6 +3,7 @@ import random
 import time
 import json
 from pygame.locals import *
+from moviepy.editor import VideoFileClip
 
 pygame.init()
 
@@ -42,7 +43,7 @@ take_card_sound = pygame.mixer.Sound("sound/cardPlace4.wav")
 cards_shuffle = pygame.mixer.Sound("sound/cardShuffle.wav")
 
 # Видео
-
+video_casino = VideoFileClip('video\casino.mp4')
 
 class Cards():
     def __init__(self,image,rank):
@@ -128,46 +129,30 @@ class BlackJack():
     def start_game(self): 
 
         display.blit(background,(0,0))
-        print_text(f'Who can beat the casino?',700,700,(10,180,250),font_size = 50)
+        print_text(f'We are a team of super heroes who must beat the casino',100,700,(255,255,255),font_size = 50)
+        for i in range(1,9):
+            time.sleep(1.5)
+            display.blit(pygame.image.load(f'image/bot{i*100}.png'),(100,100))
+            pygame.display.update()
+        
+        time.sleep(3)
+        print_text(f'hahahahaha bugaga',400,300,(255,50,50),font_size = 70)
         pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot100.png'),(100,100))
+        time.sleep(3)
+        display.blit(pygame.image.load(f'image/boss.png'),(800,100))
         pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot200.png'),(100,100))
+        time.sleep(3)
+        print_text(f'I`m waiting for you and your money!!!',200,500,(255,50,50),font_size = 70)
         pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot300.png'),(100,100))
-        pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot400.png'),(100,100))
-        pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot500.png'),(100,100))
-        pygame.display.update()
-        time.sleep(1)
-        display.blit(pygame.image.load('image/bot600.png'),(100,100))
-        pygame.display.update()
+        time.sleep(3)
 
-        # display.blit(image_user,(700,700))
-        # print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
-        # print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
-
-        # dealer
-        # display.blit(image_dealer,(1000,0))
-        # print_text(f'{self.dealer.name}',1000,0,(10,180,250),font_size = 30)
-        # print_text(f'{self.dealer.money}$',1000,50,(200,204,58),font_size = 30)
-        # display.blit(chips_stack,(1200,20))
-
-        # bots ['Eva','Victoria','Mike']
-        # position = 0
-        # for i in range(len(self.bot_list)):
-        #     display.blit(self.bot_list[i].image,(50,0+position))
-        #     print_text(f'{self.bot_list[i].name}',50,0+position,(10,180,250),font_size = 30)
-        #     print_text(f'{self.bot_list[i].money}$',50,50+position,(200,204,58),font_size = 30)
-        #     position +=300
-
-
+        display.blit(background,(0,0))
+        for i in range(5,0,-1):
+            time.sleep(1)
+            display.blit(background,(0,0))
+            print_text(f'Let`s go! {i}',500,300,(255,255,255),font_size = 120)   
+            pygame.display.update() 
+       
         time.sleep(1)
 
         self.show_users()
@@ -342,10 +327,10 @@ class BlackJack():
 
         display.blit(background,(0,0))  
 
-        # pygame.mixer.Sound.play(cards_shuffle)  
+        pygame.mixer.Sound.play(cards_shuffle)  
         for i in range(52):
             pygame.display.update()
-            # time.sleep(0.05)
+            time.sleep(0.03)
             display.blit(card_back,(1400,350-i*4))
             
         button_take_card = Botton(190,50)
@@ -464,7 +449,13 @@ class BlackJack():
             if self.user.final_sum_on_hand < self.dealer.final_sum_on_hand:
                 # self.user.money -= self.rate*2
                 self.dealer.money += self.rate 
-                print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)                          
+                print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)  
+                time.sleep(2)
+                pygame.display.set_caption('You lost everything! Good by))')
+                video_casino.preview()
+                quit()
+                pygame.quit()
+
             elif self.user.final_sum_on_hand > self.dealer.final_sum_on_hand:
                 self.user.money += self.rate*2
                 self.dealer.money -= self.rate
@@ -589,8 +580,8 @@ class BlackJack():
             position_deck +=1
 
     def take_card(self,user,number = 1):
-        # pygame.mixer.Sound.play(take_card_sound)  
-        # pygame.time.delay(300)
+        pygame.mixer.Sound.play(take_card_sound)  
+        pygame.time.delay(300)
 
         for i in range(1,number+1):
             user.cards_on_hand.append(self.deck.cards.pop())
@@ -644,13 +635,13 @@ def menu_number_of_players():
 
         display.blit(menu_background,(200,100))
 
-        print_text('Use hints?',250,200,(255,255,255),font_size = 50)
+        print_text('Use hints?',250,200,(10,180,250),font_size = 50)
         if hints:
             botton_hints_yes.draw(550,190,'yes',use_hints,60,parametr=True)
         else:
             botton_hints_no.draw(550,190,'no',use_hints,60,parametr=False)
 
-        print_text('How many bot players will be in the game?',250,400,(255,255,255),font_size = 50)
+        print_text('How many bot players will be in the game?',250,400,(10,180,250),font_size = 50)
         botton_players0.draw(550,500,'0',init_start_game,60,0)
         botton_players1.draw(650,500,'1',init_start_game,60,1)
         botton_players2.draw(750,500,'2',init_start_game,60,2)
@@ -670,8 +661,8 @@ def use_hints(hint):
 def init_start_game(number_of_bots):  
     global hints
 
-    user = Player(user_name,2000,image_user)
-    dealer = Player('Dealer',10000,image_dealer)
+    user = Player(user_name,100,image_user)
+    dealer = Player('Dealer',100000,image_dealer)
 
     bot_list = []
     bot_name = ['Eva','Victoria','Mike','Sophia']
@@ -718,7 +709,7 @@ def get_user_name():
         # textrect = Rect(0, 0, 100, FONT_SIZE)
         display.blit(menu_background,(200,100))
 
-        print_text('Enter your name:',400,400,(255,255,255),font_size = 50)
+        print_text('Enter your name:',400,400,(10,180,250),font_size = 50)
         # for i in names:
         #     text = font.render(i[:-1], True, (255,0,0), (0,0,0))
         #     display.blit(text, textrect)
