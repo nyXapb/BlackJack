@@ -198,8 +198,7 @@ class BlackJack():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # if self.need_save_game():
-                    #     self.save_file()
+                    # self.need_save_game()
                     quit()
                     pygame.quit()
                     
@@ -348,8 +347,7 @@ class BlackJack():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # if self.need_save_game():
-                    #     self.save_file()
+                    # self.need_save_game()
                     quit()
                     pygame.quit()
              
@@ -597,31 +595,31 @@ class BlackJack():
             pygame.display.update()
             time.sleep(0.7)
 
-    # @staticmethod
-    # def need_save_game():
-    #     pygame.mixer.Sound.stop(background_music_list[0])
-    #     display.blit(background,(0,0))
-    #     pygame.display.update()
-    #     while True:
-    #         inp = input(f'Вы можете сохранить игру и продолжить позже (y/n):')
-    #         if inp in ['n','y']:   
-    #             return True if inp == 'y' else False   
+    def save_file(self,save):
+        if save:
+            my_dict = {}
+            my_dict[f'{self.user.name}'] = {
+                'money':self.user.money,
+                'dealer':self.dealer.money,
+                'bot_list':[bot.money for bot in self.bot_list]
+                }
 
-    # def save_file(self):
+            print(my_dict)
+            with open('save.json', "a") as write_file:
+                json.dump(my_dict, write_file,indent=4)
 
-    #     my_dict = {}
-    #     my_dict[f'{self.user.name}'] = {
-    #         'money':self.user.money,
-    #         'dealer':self.dealer.money,
-    #         'bot_list':[bot.money for bot in self.bot_list]
-    #         }
+    def need_save_game(self):
+        pygame.mixer.Sound.stop(background_music_list[0])
+        display.blit(background,(0,0))
+        pygame.display.update()
+        botton_yes = Botton(70,50)
+        botton_no  = Botton(70,50)
 
-    #     print(my_dict)
-    #     # with open(self.save_file_name, 'a') as f:
-    #     #     f.write(f'{my_dict}\n')
-    #     with open('save.json', "a") as write_file:
-    #         json.dump(my_dict, write_file,indent=4)
-                     
+        print_text(f'Save the game?:',450,330,(255,255,255),font_size = 60)
+        botton_yes.draw(900,330,'yes',action = self.save_file,font_size = 60,parametr=True) 
+        botton_no.draw(1000,330,'no',action = self.save_file,font_size =60,parametr=False)
+        pygame.display.update()
+        time.sleep(5)
 
 def print_text(message,x,y,font_color=(255,255,255),font_type = 'Broadway',font_size = 30):
     font_type = pygame.font.SysFont(font_type,font_size)
