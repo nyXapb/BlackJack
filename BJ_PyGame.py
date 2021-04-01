@@ -3,7 +3,7 @@ import random
 import time
 import json
 from pygame.locals import *
-# from moviepy.editor import VideoFileClip
+from moviepy.editor import VideoFileClip
 
 pygame.init()
 
@@ -26,7 +26,7 @@ image_bot3 = pygame.image.load('image/bot3.png') # Bot3
 image_bot4 = pygame.image.load('image/bot4.png') # Bot4
 background = pygame.image.load('image/background.jpg') #Задний фон игры
 menu_background = pygame.image.load('image/background_menu.jpg') #Задний фон меню
-card_back = pygame.image.load('image/cards/Back Red.png') #Рубашка карты 
+card_back = pygame.image.load('image/Cards/Back Red.png') #Рубашка карты 
 chips5 = pygame.image.load('image/chips5.png') 
 chips5_1 = pygame.image.load('image/chips5_1.png') 
 chips5_2 = pygame.image.load('image/chips5_2.png') 
@@ -54,7 +54,7 @@ for i in range(1,11):
     background_music_list.append(pygame.mixer.Sound(f'sound/background_music{i}.mp3'))
 
 # Видео
-# video_casino = VideoFileClip('video\casino.mp4')
+video_casino = VideoFileClip('video\casino.mp4')
 
 class Cards():
     def __init__(self,image,rank):
@@ -453,12 +453,12 @@ class BlackJack():
                 self.dealer.money += self.rate 
                 print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)  
                 pygame.mixer.Sound.play(lose_sound)
-                # time.sleep(2)
-                # if self.user.money == 0:
-                #     pygame.display.set_caption('You lost everything! Good by))')
-                #     video_casino.preview()
-                #     quit()
-                #     pygame.quit()
+                time.sleep(2)
+                if self.user.money == 0:
+                    pygame.display.set_caption('You lost everything! Good by))')
+                    video_casino.preview()
+                    quit()
+                    pygame.quit()
 
             elif self.user.final_sum_on_hand > self.dealer.final_sum_on_hand:
                 self.user.money += self.rate*2
