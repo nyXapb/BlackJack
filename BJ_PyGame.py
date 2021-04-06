@@ -26,7 +26,7 @@ image_bot3 = pygame.image.load('image/bot3.png') # Bot3
 image_bot4 = pygame.image.load('image/bot4.png') # Bot4
 background = pygame.image.load('image/background.jpg') #Задний фон игры
 menu_background = pygame.image.load('image/background_menu.jpg') #Задний фон меню
-card_back = pygame.image.load('image/Cards/Back Red.png') #Рубашка карты 
+card_back = pygame.image.load('image/cards/Back Red.png') #Рубашка карты 
 chips5 = pygame.image.load('image/chips5.png') 
 chips5_1 = pygame.image.load('image/chips5_1.png') 
 chips5_2 = pygame.image.load('image/chips5_2.png') 
@@ -606,7 +606,6 @@ class BlackJack():
                     'bot_list':[bot.money for bot in self.bot_list]
                     }
 
-            print(save_file)
             with open('save.json', "w") as write_file:
                 json.dump(save_file, write_file,indent=4)
         quit()    
@@ -668,11 +667,7 @@ def load_game():
     botton_list = []
     for i,j in load_file.items():
         botton_list.append((Botton(360,60),i,j))
-    print(botton_list)
 
-    # for i in botton_list:
-    #     botton_ = Botton(360,60)
-   
     show = True
     while show:
         for event in pygame.event.get():
@@ -683,9 +678,34 @@ def load_game():
         display.blit(menu_background,(200,100))
         position = 0 
         for a,b,c in botton_list:
-            a.draw(150,300+position,f'{b},{c}',menu_number_of_players,30)
+            a.draw(150,300+position,f'{b},{c}',init_load_game,30,parametr=(b,c))
             position +=100
         pygame.display.update()
+
+def init_load_game(date):
+    global hints
+
+    pygame.mixer.Sound.stop(menu_music)
+
+    user = Player(date[0],date[1].get('money'),image_user)
+    # user = Player(user_name,2000,image_user)
+    dealer = Player('Dealer',date[1].get('dealer'),image_dealer)
+
+    number_of_bots = date[1].get('bot_list')
+    bot_list = []
+    bot_name = ['Eva','Victoria','Mike','Sophia']
+    for i in range(0,len(number_of_bots)):
+        bot_list.append(Player(f'{bot_name[i]}',number_of_bots[i],pygame.image.load('image/bot'+str(i+1)+'.png')))
+
+    cards_list = []
+    for j in ['Clubs ','Diamond ','Hearts ','Spades ']:
+        cards_list += [(pygame.image.load('image/cards/'+j+str(i)+'.png'),10 if i>10 else 11 if i==1 else i) for i in range(1,14)]
+
+    deck = Deck(cards_list)
+    deck.shuffle()
+
+    blackjack = BlackJack(deck,user,dealer,bot_list,hints)        
+    blackjack.show_users()
 
 def menu_number_of_players():
     global user_name
