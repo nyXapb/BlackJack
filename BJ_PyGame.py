@@ -3,7 +3,7 @@ import random
 import time
 import json
 from pygame.locals import *
-# from moviepy.editor import VideoFileClip
+from moviepy.editor import VideoFileClip
 
 pygame.init()
 
@@ -54,7 +54,7 @@ for i in range(1,11):
     background_music_list.append(pygame.mixer.Sound(f'sound/background_music{i}.mp3'))
 
 # Видео
-# video_casino = VideoFileClip('video\casino.mp4')
+video_casino = VideoFileClip('video\casino.mp4')
 
 class Cards():
     def __init__(self,image,rank):
@@ -138,37 +138,37 @@ class BlackJack():
             self.user_list.append(bot)
 
     def start_game(self): 
-        pygame.mixer.Sound.play(fight_music)
-        display.blit(background,(0,0))
-        pygame.display.update()
-        print_text(f'We are a team of super heroes who must beat the casino',100,50,(255,255,255),font_size = 50)
-        pygame.display.update()
-        for i in range(1,9):
-            time.sleep(1.5)
-            display.blit(pygame.image.load(f'image/bot{i*100}.png'),(100,100))
-            pygame.display.update()
+        # pygame.mixer.Sound.play(fight_music)
+        # display.blit(background,(0,0))
+        # pygame.display.update()
+        # print_text(f'We are a team of super heroes who must beat the casino',100,50,(255,255,255),font_size = 50)
+        # pygame.display.update()
+        # for i in range(1,9):
+        #     time.sleep(1.5)
+        #     display.blit(pygame.image.load(f'image/bot{i*100}.png'),(100,100))
+        #     pygame.display.update()
         
-        time.sleep(3)
-        pygame.mixer.Sound.play(laughter_sound) 
-        print_text(f'ha-ha-ha-ha-ha-ha',600,300,(255,50,50),font_size = 70)
-        pygame.display.update()
-        time.sleep(3)
-        display.blit(pygame.image.load(f'image/boss.png'),(900,100))
-        pygame.display.update()
-        time.sleep(3)
-        print_text(f'I`m waiting for you and your money!!!',100,500,(255,50,50),font_size = 70)
-        pygame.display.update()
-        time.sleep(5)
+        # time.sleep(3)
+        # pygame.mixer.Sound.play(laughter_sound) 
+        # print_text(f'ha-ha-ha-ha-ha-ha',600,300,(255,50,50),font_size = 70)
+        # pygame.display.update()
+        # time.sleep(3)
+        # display.blit(pygame.image.load(f'image/boss.png'),(900,100))
+        # pygame.display.update()
+        # time.sleep(3)
+        # print_text(f'I`m waiting for you and your money!!!',100,500,(255,50,50),font_size = 70)
+        # pygame.display.update()
+        # time.sleep(5)
 
-        display.blit(background,(0,0))
-        for i in range(5,0,-1):
-            time.sleep(1)
-            display.blit(background,(0,0))
-            print_text(f'Let`s go! {i}',500,300,(255,255,255),font_size = 120)   
-            pygame.display.update() 
+        # display.blit(background,(0,0))
+        # for i in range(5,0,-1):
+        #     time.sleep(1)
+        #     display.blit(background,(0,0))
+        #     print_text(f'Let`s go! {i}',500,300,(255,255,255),font_size = 120)   
+        #     pygame.display.update() 
        
-        time.sleep(1)
-        pygame.mixer.Sound.stop(fight_music)
+        # time.sleep(1)
+        # pygame.mixer.Sound.stop(fight_music)
         self.show_users()
 
     def show_users(self):
@@ -198,7 +198,7 @@ class BlackJack():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # self.need_save_game()
+                    self.need_save_game()
                     quit()
                     pygame.quit()
                     
@@ -347,7 +347,7 @@ class BlackJack():
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    # self.need_save_game()
+                    self.need_save_game()
                     quit()
                     pygame.quit()
              
@@ -453,12 +453,12 @@ class BlackJack():
                 self.dealer.money += self.rate 
                 print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)  
                 pygame.mixer.Sound.play(lose_sound)
-                # time.sleep(2)
-                # if self.user.money == 0:
-                #     pygame.display.set_caption('You lost everything! Good by))')
-                #     video_casino.preview()
-                #     quit()
-                #     pygame.quit()
+                time.sleep(2)
+                if self.user.money == 0:
+                    pygame.display.set_caption('You lost everything! Good by))')
+                    video_casino.preview()
+                    quit()
+                    pygame.quit()
 
             elif self.user.final_sum_on_hand > self.dealer.final_sum_on_hand:
                 self.user.money += self.rate*2
@@ -596,17 +596,22 @@ class BlackJack():
             time.sleep(0.7)
 
     def save_file(self,save):
+        # pygame.time.delay(300)
         if save:
-            my_dict = {}
-            my_dict[f'{self.user.name}'] = {
-                'money':self.user.money,
-                'dealer':self.dealer.money,
-                'bot_list':[bot.money for bot in self.bot_list]
-                }
+            with open("D:\TeachMeSkills\BlackJack\save.json", "r") as read_file:
+                save_file = json.load(read_file)
+                save_file[f'{self.user.name}'] = {
+                    'money':self.user.money,
+                    'dealer':self.dealer.money,
+                    'bot_list':[bot.money for bot in self.bot_list]
+                    }
 
-            print(my_dict)
-            with open('save.json', "a") as write_file:
-                json.dump(my_dict, write_file,indent=4)
+            print(save_file)
+            with open('save.json', "w") as write_file:
+                json.dump(save_file, write_file,indent=4)
+        quit()    
+        pygame.quit() 
+               
 
     def need_save_game(self):
         pygame.mixer.Sound.stop(background_music_list[0])
@@ -616,10 +621,17 @@ class BlackJack():
         botton_no  = Botton(70,50)
 
         print_text(f'Save the game?:',450,330,(255,255,255),font_size = 60)
-        botton_yes.draw(900,330,'yes',action = self.save_file,font_size = 60,parametr=True) 
-        botton_no.draw(1000,330,'no',action = self.save_file,font_size =60,parametr=False)
-        pygame.display.update()
-        time.sleep(5)
+       
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    quit()
+                    pygame.quit()
+            # display.blit(background,(0,0))        
+            botton_yes.draw(1000,330,'yes',action = self.save_file,font_size = 60,parametr=1) 
+            botton_no.draw(1130,330,'no',action = self.save_file,font_size =60,parametr=0)
+            pygame.display.update()
+        # time.sleep(5)    
 
 def print_text(message,x,y,font_color=(255,255,255),font_type = 'Broadway',font_size = 30):
     font_type = pygame.font.SysFont(font_type,font_size)
@@ -630,6 +642,7 @@ def show_menu():
 
     pygame.mixer.Sound.play(menu_music)
     start_botton = Botton(360,60)
+    load_botton = Botton(360,60)
     quit_botton = Botton(130,60)
 
     show = True
@@ -641,7 +654,37 @@ def show_menu():
 
         display.blit(menu_background,(200,100))
         start_botton.draw(650,300,'Start game',menu_number_of_players,60)
-        quit_botton.draw(740,400,'Quit',quit,60)
+        start_botton.draw(660,400,'Load game',load_game,60)
+        quit_botton.draw(740,500,'Quit',quit,60)
+        pygame.display.update()
+
+def load_game():
+    pygame.display.update()
+    display.blit(menu_background,(200,100))
+    pygame.time.delay(300)
+    with open("D:\TeachMeSkills\BlackJack\save.json", "r") as read_file:
+        load_file = json.load(read_file)
+    
+    botton_list = []
+    for i,j in load_file.items():
+        botton_list.append((Botton(360,60),i,j))
+    print(botton_list)
+
+    # for i in botton_list:
+    #     botton_ = Botton(360,60)
+   
+    show = True
+    while show:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit()
+                pygame.quit()
+
+        display.blit(menu_background,(200,100))
+        position = 0 
+        for a,b,c in botton_list:
+            a.draw(150,300+position,f'{b},{c}',menu_number_of_players,30)
+            position +=100
         pygame.display.update()
 
 def menu_number_of_players():

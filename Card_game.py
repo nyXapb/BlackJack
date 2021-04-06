@@ -218,7 +218,7 @@ class BlackJack():
         my_dict['my_player'] = {'name':self.my_player.name,'money':self.my_player.money}
         my_dict['dealer']    = {'name':self.dealer.name,'money':self.dealer.money}
         my_dict['bot_list']  = [{'name':bot.name,'money':bot.money } for bot in self.bot_list]
-        print(my_dict)
+        # print(my_dict)
         # with open(self.save_file_name, 'a') as f:
         #     f.write(f'{my_dict}\n')
         with open(self.save_file_name, "w") as write_file:
