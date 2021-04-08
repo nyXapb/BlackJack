@@ -37,6 +37,12 @@ chips100 = pygame.image.load('image/chips100.png')
 chips100_1 = pygame.image.load('image/chips100_1.png') 
 chips100_2 = pygame.image.load('image/chips100_2.png') 
 chips_stack = pygame.image.load('image/chips_stack.png') 
+image_hints = pygame.image.load('image/hints.png')
+image_no_hints = pygame.image.load('image/no_hints.png') 
+image_sound = pygame.image.load('image/sound.png') 
+image_no_sound = pygame.image.load('image/no_sound.png') 
+image_music = pygame.image.load('image/music.png') 
+image_no_music = pygame.image.load('image/no_music.png') 
 
 # Звуки
 take_card_sound = pygame.mixer.Sound("sound/cardPlace4.wav")
@@ -131,6 +137,8 @@ class BlackJack():
         self.bot_list = bot_list
         self.user_list = []
         self.hints = hints
+        self.music = True
+        self.sound = True
 
         self.user_list.append(user)
         self.user_list.append(dealer) 
@@ -138,44 +146,47 @@ class BlackJack():
             self.user_list.append(bot)
 
     def start_game(self): 
-        # pygame.mixer.Sound.play(fight_music)
-        # display.blit(background,(0,0))
-        # pygame.display.update()
-        # print_text(f'We are a team of super heroes who must beat the casino',100,50,(255,255,255),font_size = 50)
-        # pygame.display.update()
-        # for i in range(1,9):
-        #     time.sleep(1.5)
-        #     display.blit(pygame.image.load(f'image/bot{i*100}.png'),(100,100))
-        #     pygame.display.update()
-        
-        # time.sleep(3)
-        # pygame.mixer.Sound.play(laughter_sound) 
-        # print_text(f'ha-ha-ha-ha-ha-ha',600,300,(255,50,50),font_size = 70)
-        # pygame.display.update()
-        # time.sleep(3)
-        # display.blit(pygame.image.load(f'image/boss.png'),(900,100))
-        # pygame.display.update()
-        # time.sleep(3)
-        # print_text(f'I`m waiting for you and your money!!!',100,500,(255,50,50),font_size = 70)
-        # pygame.display.update()
-        # time.sleep(5)
 
-        # display.blit(background,(0,0))
-        # for i in range(5,0,-1):
-        #     time.sleep(1)
-        #     display.blit(background,(0,0))
-        #     print_text(f'Let`s go! {i}',500,300,(255,255,255),font_size = 120)   
-        #     pygame.display.update() 
-       
-        # time.sleep(1)
-        # pygame.mixer.Sound.stop(fight_music)
+        pygame.mixer.Sound.play(fight_music)
+        display.blit(background,(0,0))
+        pygame.display.update()
+        print_text(f'We are a team of super heroes who must beat the casino',100,50,(255,255,255),font_size = 50)
+        pygame.display.update()
+        for i in range(1,9):
+            time.sleep(1.5)
+            display.blit(pygame.image.load(f'image/bot{i*100}.png'),(100,100))
+            pygame.display.update()
+        
+        time.sleep(3)
+        pygame.mixer.Sound.play(laughter_sound) 
+        print_text(f'ha-ha-ha-ha-ha-ha',600,300,(255,50,50),font_size = 70)
+        pygame.display.update()
+        time.sleep(3)
+        display.blit(pygame.image.load(f'image/boss.png'),(900,100))
+        pygame.display.update()
+        time.sleep(3)
+        print_text(f'I`m waiting for you and your money!!!',100,500,(255,50,50),font_size = 70)
+        pygame.display.update()
+        time.sleep(5)
+
+        display.blit(background,(0,0))
+        for i in range(5,0,-1):
+            time.sleep(1)
+            display.blit(background,(0,0))
+            print_text(f'Let`s go! {i}',500,300,(255,255,255),font_size = 120)   
+            pygame.display.update() 
+    
+        time.sleep(1)
+        pygame.mixer.Sound.stop(fight_music)
         self.show_users()
 
     def show_users(self):
 
         pygame.mixer.Sound.stop(background_music_list[0])
-        random.shuffle(background_music_list)
-        pygame.mixer.Sound.play(background_music_list[0])
+
+        if self.music:
+            random.shuffle(background_music_list)
+            pygame.mixer.Sound.play(background_music_list[0])
 
         self.number_chips = 0
         self.rate = 0
@@ -186,6 +197,8 @@ class BlackJack():
         button_play  = Botton(190,50)
         button_clear = Botton(100,50)
 
+        button_yes_no = Botton(100,100)
+      
         button_05 = Botton(100,100)
         button_25 = Botton(100,100)
         button_100 = Botton(100,100)
@@ -201,7 +214,31 @@ class BlackJack():
                     self.need_save_game()
                     quit()
                     pygame.quit()
-                    
+
+            if 1550 < mouse[0] < 1650 and 0 < mouse[1] <100:
+                if click[0] == 1:
+                    button_yes_no.draw(1550,0,'',self.change_bool_value,only_text = True,parametr = ('music',True))
+            if self.music:              
+                display.blit(image_music,(1550,0))  
+            else:
+                display.blit(image_no_music,(1550,0)) 
+
+            if 1550 < mouse[0] < 1650 and 110 < mouse[1] <210:
+                if click[0] == 1:
+                    button_yes_no.draw(1550,110,'',self.change_bool_value,only_text = True,parametr = ('sound',True))
+            if self.sound:              
+                display.blit(image_sound,(1550,110))  
+            else:
+                display.blit(image_no_sound,(1550,110))
+
+            # if 1550 < mouse[0] < 1650 and 220 < mouse[1] <320:
+            #     if click[0] == 1:
+            #         button_yes_no.draw(1550,220,'',self.change_bool_value,only_text = True,parametr = 'hints')
+            # if self.hints:              
+            #     display.blit(image_hints,(1550,220))  
+            # else:
+            #     display.blit(image_no_hints,(1550,220))    
+
             if self.rate > 0:
                 button_play.draw(912,845,'Lets go',self.start_round,only_text = False)
                 button_clear.draw(1110,845,'Clear',self.clear,only_text = False)
@@ -231,6 +268,22 @@ class BlackJack():
                     display.blit(chips100,(1100,700)) 
                
             pygame.display.update()
+
+    def change_bool_value(self,info):
+        pygame.time.delay(300)    
+        if info[0] == 'music':
+            self.music = not self.music 
+            if self.music:
+                random.shuffle(background_music_list)
+                pygame.mixer.Sound.play(background_music_list[0])   
+            else:
+                pygame.mixer.Sound.stop(background_music_list[0])
+        elif info[0] == 'sound':
+            self.sound = not self.sound
+        if info[1] == True:    
+            self.refresh_window()
+        else:
+            self.show_result()    
 
     def refresh_window(self):
 
@@ -285,7 +338,8 @@ class BlackJack():
         return round(chance,2)
 
     def chips_on_table(self,parametr):
-        pygame.mixer.Sound.play(chips_stack_sound)
+        if self.sound:
+            pygame.mixer.Sound.play(chips_stack_sound)
         pygame.time.delay(300)
 
         self.user.money -= parametr[1]
@@ -298,10 +352,10 @@ class BlackJack():
         for bot in self.bot_list:
             bot.list_chips = [] 
 
-            if random.randrange(5, 200, 5) > bot.money:
+            if random.randrange(5, 100, 5) > bot.money:
                 bot.rate = 5  
             else:        
-                bot.rate = random.randrange(5, 200, 5)
+                bot.rate = random.randrange(5, 100, 5)
             rate = bot.rate
 
             while rate !=0:
@@ -327,7 +381,9 @@ class BlackJack():
 
         display.blit(background,(0,0))  
 
-        pygame.mixer.Sound.play(cards_shuffle_sound)  
+        if self.sound:
+            pygame.mixer.Sound.play(cards_shuffle_sound)  
+
         for i in range(52):
             pygame.display.update()
             time.sleep(0.05)
@@ -335,6 +391,7 @@ class BlackJack():
             
         button_take_card = Botton(190,50)
         button_skip = Botton(100,50)
+        button_yes_no = Botton(100,100)
 
         print_text(f'{self.user.name}',700,700,(10,180,250),font_size = 30)
         print_text(f'{self.user.money}$',700,750,(200,204,58),font_size = 30)
@@ -350,6 +407,30 @@ class BlackJack():
                     self.need_save_game()
                     quit()
                     pygame.quit()
+
+            if 1550 < mouse[0] < 1650 and 0 < mouse[1] <100:
+                if click[0] == 1:
+                    button_yes_no.draw(1550,0,'',self.change_bool_value,only_text = True,parametr = ('music',False))
+            if self.music:              
+                display.blit(image_music,(1550,0))  
+            else:
+                display.blit(image_no_music,(1550,0)) 
+
+            if 1550 < mouse[0] < 1650 and 110 < mouse[1] <210:
+                if click[0] == 1:
+                    button_yes_no.draw(1550,110,'',self.change_bool_value,only_text = True,parametr = ('sound',False))
+            if self.sound:              
+                display.blit(image_sound,(1550,110))  
+            else:
+                display.blit(image_no_sound,(1550,110))
+
+            # if 1550 < mouse[0] < 1650 and 220 < mouse[1] <320:
+            #     if click[0] == 1:
+            #         button_yes_no.draw(1550,220,'',self.change_bool_value,only_text = True,parametr = 'hints')
+            # if self.hints:              
+            #     display.blit(image_hints,(1550,220))  
+            # else:
+            #     display.blit(image_no_hints,(1550,220))        
              
             if self.user.sum_on_hand < 21: 
                 button_take_card.draw(912,845,'Take card',action = self.take_card,only_text = False, parametr=self.user)
@@ -444,17 +525,19 @@ class BlackJack():
                rate = (int(self.rate*0.5) + self.rate*2) 
 
             self.user.money += rate
-            self.dealer.money -= rate
+            self.dealer.money -= rate-self.rate
             print_text(f'YOU WON! {int(rate)}$',700,450,(50,255,50),font_size = 60) 
-            pygame.mixer.Sound.play(win_sound)
+            if self.sound:
+                pygame.mixer.Sound.play(win_sound)
         else:
             if self.user.final_sum_on_hand < self.dealer.final_sum_on_hand:
                 # self.user.money -= self.rate*2
                 self.dealer.money += self.rate 
-                print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50)  
-                pygame.mixer.Sound.play(lose_sound)
-                time.sleep(2)
+                print_text(f'You lose! {int(self.rate)}$',700,450,(255,50,50),font_size = 50) 
+                if self.sound: 
+                    pygame.mixer.Sound.play(lose_sound)
                 if self.user.money == 0:
+                    time.sleep(2)
                     pygame.display.set_caption('You lost everything! Good by))')
                     video_casino.preview()
                     quit()
@@ -464,11 +547,13 @@ class BlackJack():
                 self.user.money += self.rate*2
                 self.dealer.money -= self.rate
                 print_text(f'YOU WON! {int(self.rate*2)}$',700,450,(50,255,50),font_size = 60)
-                pygame.mixer.Sound.play(win_sound)
+                if self.sound:
+                    pygame.mixer.Sound.play(win_sound)
             else:
                 self.user.money += self.rate
                 print_text(f'Draw!',750,450,(255,255,255),font_size = 50)  
-                pygame.mixer.Sound.play(draw_sound)
+                if self.sound:
+                    pygame.mixer.Sound.play(draw_sound)
 
         position = 0
         for bot in self.bot_list:
@@ -559,7 +644,7 @@ class BlackJack():
             display.blit(i.image,(870+position,700))
             position += 50
         print_text(f'score: {self.user.sum_on_hand}',860,650,(255,255,255),font_size = 30)
-        if self.hints and id_user.sum_on_hand < 21:
+        if self.hints and self.user.sum_on_hand < 21:
             chance = self.chance_of_success()
             print_text(f'change of success: {chance}%',950+position,730,(255,255,255),font_size = 30)    
 
@@ -587,7 +672,8 @@ class BlackJack():
 
     def take_card(self,user,number = 1):
         for i in range(1,number+1):
-            pygame.mixer.Sound.play(take_card_sound)  
+            if self.sound:
+                pygame.mixer.Sound.play(take_card_sound)  
             # pygame.time.delay(150)
 
             user.cards_on_hand.append(self.deck.cards.pop())
@@ -601,9 +687,9 @@ class BlackJack():
             with open("D:\TeachMeSkills\BlackJack\save.json", "r") as read_file:
                 save_file = json.load(read_file)
                 save_file[f'{self.user.name}'] = {
-                    'money':self.user.money,
+                    'money':self.user.money+self.rate,
                     'dealer':self.dealer.money,
-                    'bot_list':[bot.money for bot in self.bot_list]
+                    'bot_list':[bot.money+bot.rate for bot in self.bot_list]
                     }
 
             with open('save.json', "w") as write_file:
@@ -616,8 +702,8 @@ class BlackJack():
         pygame.mixer.Sound.stop(background_music_list[0])
         display.blit(background,(0,0))
         pygame.display.update()
-        botton_yes = Botton(70,50)
-        botton_no  = Botton(70,50)
+        botton_yes = Botton(100,50)
+        botton_no  = Botton(80,50)
 
         print_text(f'Save the game?:',450,330,(255,255,255),font_size = 60)
        
@@ -638,7 +724,6 @@ def print_text(message,x,y,font_color=(255,255,255),font_type = 'Broadway',font_
     display.blit(text,(x,y))
 
 def show_menu():
-
     pygame.mixer.Sound.play(menu_music)
     start_botton = Botton(360,60)
     load_botton = Botton(360,60)
@@ -666,7 +751,7 @@ def load_game():
     
     botton_list = []
     for i,j in load_file.items():
-        botton_list.append((Botton(360,60),i,j))
+        botton_list.append((Botton(1000,30),i,j))
 
     show = True
     while show:
@@ -676,10 +761,23 @@ def load_game():
                 pygame.quit()
 
         display.blit(menu_background,(200,100))
+        print_text(f'LOAD GAME:',450,100,(100,255,255),font_size = 60)
         position = 0 
-        for a,b,c in botton_list:
-            a.draw(150,300+position,f'{b},{c}',init_load_game,30,parametr=(b,c))
-            position +=100
+        text =''
+        number = 1
+        for button,user_name,info in botton_list:
+            user_money  = info.get('money')
+            dealer_dealer = info.get('dealer')
+            bots = info.get('bot_list')
+            text = f'{number}.  {user_name} {user_money}$   dealer {dealer_dealer}$'
+            if len(bots):
+                text +="      " +str(len(bots))+' bots ('     
+                for bot in bots:
+                    text += "  "+str(bot)+'$'
+                text +=' )'
+            button.draw(300,200+position,text,init_load_game,30,parametr=(user_name,info))
+            position +=70
+            number +=1
         pygame.display.update()
 
 def init_load_game(date):
@@ -758,13 +856,13 @@ def init_start_game(number_of_bots):
 
     pygame.mixer.Sound.stop(menu_music)
 
-    user = Player(user_name,2000,image_user)
-    dealer = Player('Dealer',10000,image_dealer)
+    user = Player(user_name,200,image_user)
+    dealer = Player('Dealer',1000,image_dealer)
 
     bot_list = []
     bot_name = ['Eva','Victoria','Mike','Sophia']
     for i in range(0,number_of_bots):
-        bot_list.append(Player(f'{bot_name[i]}',random.randrange(1000, 5000, 5),pygame.image.load('image/bot'+str(i+1)+'.png')))
+        bot_list.append(Player(f'{bot_name[i]}',random.randrange(200, 500, 5),pygame.image.load('image/bot'+str(i+1)+'.png')))
 
     cards_list = []
     for j in ['Clubs ','Diamond ','Hearts ','Spades ']:
@@ -818,6 +916,7 @@ def get_user_name():
 
 if __name__ == '__main__':
     hints = False
+
     show_menu()
     pygame.quit()
 
